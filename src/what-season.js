@@ -12,46 +12,26 @@ const { NotImplementedError } = require("../extensions/index.js");
  *
  */
 function getSeason(date) {
-  if (!(date instanceof Date) || isNaN(date)) {
-    throw new Error("Invalid date!");
+  if (!date) {
+    return "Unable to determine the time of year!";
   }
-
-  // Check if the date object properties have been tampered with
-  const methods = ["toString", "toDateString", "valueOf", "getTime"];
-  for (let method of methods) {
-    if (
-      typeof date[method] !== "function" ||
-      date[method]() !== Date.prototype[method].call(date)
-    ) {
-      throw new Error("Invalid date!");
-    }
-  }
-
-  // Check for the toStringTag to be 'Date'
-  if (Object.prototype.toString.call(date) !== "[object Date]") {
+  if (
+    !(date instanceof Date) ||
+    Object.prototype.hasOwnProperty.call(date, "toString")
+  ) {
     throw new Error("Invalid date!");
   }
 
   const month = date.getMonth();
-  switch (month) {
-    case 0:
-    case 1:
-    case 11:
-      return "winter";
-    case 2:
-    case 3:
-    case 4:
+  switch (true) {
+    case month >= 2 && month <= 4:
       return "spring";
-    case 5:
-    case 6:
-    case 7:
+    case month >= 5 && month <= 7:
       return "summer";
-    case 8:
-    case 9:
-    case 10:
+    case month >= 8 && month <= 10:
       return "autumn";
     default:
-      throw new Error("Invalid date");
+      return "winter";
   }
 }
 
