@@ -1,5 +1,3 @@
-const { NotImplementedError } = require("../extensions/index.js");
-
 /**
  * Create transformed array based on the control sequences that original
  * array contains
@@ -13,32 +11,42 @@ const { NotImplementedError } = require("../extensions/index.js");
  * transform([1, 2, 3, '--discard-prev', 4, 5]) => [1, 2, 4, 5]
  *
  */
-function transform(/*arr*/) {
-  throw new NotImplementedError("Not implemented");
-  // if (!Array.isArray(arr)) {
-  //   throw new Error("'arr' parameter must be an instance of the Array!");
-  // }
-  // const transformedArray = [];
-  // for (let i = 0; i < arr.length; i++) {
-  //   if (arr[i] === "--discard-next") {
-  //     i++;
-  //   } else if (arr[i] === "--discard-prev") {
-  //     if (transformedArray.length > 0) {
-  //       transformedArray.pop();
-  //     }
-  //   } else if (arr[i] === "--double-next") {
-  //     if (i < arr.length - 1) {
-  //       transformedArray.push(arr[i + 1]);
-  //     }
-  //   } else if (arr[i] === "--double-prev") {
-  //     if (i > 0) {
-  //       transformedArray.push(arr[i - 1]);
-  //     }
-  //   } else {
-  //     transformedArray.push(arr[i]);
-  //   }
-  // }
-  // return transformedArray;
+function transform(arr) {
+  if (!Array.isArray(arr)) {
+    throw new Error("'arr' parameter must be an instance of the Array!");
+  }
+
+  let transformed = [];
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === "--discard-next") {
+      i++;
+      if (arr[i + 1] === "--double-prev" || arr[i + 1] === "--discard-prev") {
+        i++;
+      }
+    } else if (
+      arr[i] === "--discard-prev" &&
+      i > 0 &&
+      arr[i - 2] !== "--discard-next"
+    ) {
+      transformed.pop();
+    } else if (arr[i] === "--double-next" && i < arr.length - 1) {
+      transformed.push(arr[i + 1]);
+    } else if (
+      arr[i] === "--double-prev" &&
+      i > 0 &&
+      arr[i - 2] !== "--discard-next"
+    ) {
+      transformed.push(arr[i - 1]);
+    } else if (
+      arr[i] !== "--discard-next" &&
+      arr[i] !== "--discard-prev" &&
+      arr[i] !== "--double-next" &&
+      arr[i] !== "--double-prev"
+    ) {
+      transformed.push(arr[i]);
+    }
+  }
+  return transformed;
 }
 
 module.exports = {
