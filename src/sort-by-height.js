@@ -13,8 +13,7 @@ const { NotImplementedError } = require("../extensions/index.js");
  */
 function sortByHeight(arr) {
   const sortedValues = arr.filter((val) => val !== -1).sort((a, b) => a - b);
-  let index = 0;
-  return arr.map((val) => (val !== -1 ? sortedValues[index++] : val));
+  return arr.map((val) => (val !== -1 ? sortedValues.shift() : -1));
 }
 
 module.exports = {
