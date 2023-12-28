@@ -13,14 +13,11 @@ const { NotImplementedError } = require("../extensions/index.js");
  */
 function deleteDigit(n) {
   const numStr = String(n);
-  let maxNum = 0;
 
-  for (let i = 0; i < numStr.length; i++) {
-    const currentNum = Number(numStr.slice(0, i) + numStr.slice(i + 1));
-    maxNum = Math.max(maxNum, currentNum);
-  }
-
-  return maxNum;
+  return [...numStr].reduce((maxNum, _, index) => {
+    const currentNum = Number(numStr.slice(0, index) + numStr.slice(index + 1));
+    return Math.max(maxNum, currentNum);
+  }, 0);
 }
 
 module.exports = {
